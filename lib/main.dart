@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:project1/authentication/widget/login_screen.dart';
 import 'package:project1/splash_screen.dart';
 import 'package:project1/translations/language.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+
+import 'myApp/widget/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
           duration: 10000,
           splash: const SplashScreen(title:"screen"),
           nextScreen: const MyHomePage(title: 'Flutter Demo'),
-          //backgroundColor: Colors.black12,
+          backgroundColor: Colors.black12,
           centered: true,
           splashIconSize: 400,
           splashTransition: SplashTransition.fadeTransition,
@@ -54,22 +57,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  final Future <bool> _isLogged = Future<bool>.delayed(
+      const Duration(milliseconds: 100), () {
+        return true;
+      }
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('app_name').tr() ,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const <Widget>[
-             Text(
-              'You have pushed the button this many times:',
-            )
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    return  FutureBuilder<bool> (
+        future: _isLogged,
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          Widget child;
+          if (snapshot.hasData) {
+            if (true == snapshot.data) {
+              child = const Home(title: 'totoro');
+            } else {
+              child = const LoginScreen();
+            }
+          } else {
+            child =  const SplashScreen(title:"screen");
+          }
+
+          return child;
+        }
     );
   }
 }

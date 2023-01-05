@@ -1,4 +1,4 @@
-import 'package:project1/authentication/provider/my_api.dart';
+import 'package:project1/authentication/my_api.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:project1/authentication/user_credential.dart';
 import 'package:project1/authentication/user_connexion_interface.dart';
