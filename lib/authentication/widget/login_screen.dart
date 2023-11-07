@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:project1/authentication/Adaptater/inscription/user_inscription.dart';
+import 'package:project1/authentication/authentication_provider/authentication_provider.dart';
+import 'package:project1/authentication/Adaptater/connexion/user_connexion.dart';
+import 'package:project1/main.dart';
 import 'package:project1/myApp/widget/home.dart';
+import 'package:dio/dio.dart';
 
 const users = {
   'dribbble@gmail.com': '12345',
@@ -9,29 +14,51 @@ const users = {
 };
 
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  final String title;
+  const LoginScreen({super.key, required this.title});
+  @override
+  State<LoginScreen> createState() => _LoginScreen();
+}
+
+
+class _LoginScreen extends State<LoginScreen> {
 
   static const String routeName = "login";
-  const LoginScreen({super.key});
+
+  Future <void> _isLogged() async {
+    if (await AuthenticationProvider.isUserLogged()) {
+      Future(() {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const Home(title: "rrrr"),
+        ));
+      });
+    }
+  }
+  
   Duration get loginTime => const Duration(milliseconds: 2250);
 
   Future<String?> _authUser (LoginData data) {
-    debugPrint('Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'User not exists';
+    return AuthenticationProvider().authUser(
+        UserConnexion(email: data.name, password: data.password),
+        "myapi"
+    ).then((_) async {
+      if (true == await AuthenticationProvider.isUserLogged()) {
+        return null;
       }
-      if (users[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      return null;
+      return _.error;
     });
   }
 
   Future<String?> _signupUser(SignupData data) {
-    debugPrint('Signup Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      return 'noooop';
+    return AuthenticationProvider().onSignup(
+        UserInscription(email: data.name??"", password: data.password??""),
+        "myapi"
+    ).then((_) async {
+      if (true == await AuthenticationProvider.isUserLogged()) {
+        return null;
+      }
+      return _.error;
     });
   }
 
@@ -44,6 +71,20 @@ class LoginScreen extends StatelessWidget {
       return null;
     });
   }
+// totoro@opmail.com
+  Future<String?>? _confirmSignup(String msg, LoginData loginData) {
+    return Future.delayed(loginTime).then((_) {
+      return null;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      _isLogged();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +93,11 @@ class LoginScreen extends StatelessWidget {
       logo: const AssetImage('assets/logo.png'),
       onLogin: (_) => _authUser(_),
       onSignup: (_) =>_signupUser(_),
-      onSubmitAnimationCompleted: () {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const Home(title: "totoro"),
-        ));
+      //onConfirmSignup: (String msg, LoginData loginData) =>_confirmSignup(msg, loginData),
+      onSubmitAnimationCompleted: () async {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const LoginScreen(title: 'sss'),
+          ));
       },
       onRecoverPassword: (_) => _recoverPassword(_),
       messages: LoginMessages(

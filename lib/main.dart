@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:project1/authentication/authentication_provider/authentication_provider.dart';
 import 'package:project1/authentication/widget/login_screen.dart';
 import 'package:project1/splash_screen.dart';
 import 'package:project1/translations/language.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: AnimatedSplashScreen(
-          duration: 10000,
+          duration: 5000,
           splash: const SplashScreen(title:"screen"),
           nextScreen: const MyHomePage(title: 'Flutter Demo'),
           backgroundColor: Colors.black12,
@@ -58,23 +59,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final Future <bool> _isLogged = Future<bool>.delayed(
-      const Duration(milliseconds: 100), () {
-        return true;
-      }
-  );
-
   @override
   Widget build(BuildContext context) {
     return  FutureBuilder<bool> (
-        future: _isLogged,
+        future: AuthenticationProvider.isUserLogged(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           Widget child;
           if (snapshot.hasData) {
             if (true == snapshot.data) {
-              child = const Home(title: 'totoro');
+              child = const Home(title: 'Bonjour');
             } else {
-              child = const LoginScreen();
+              child = const LoginScreen(title: 'Bienvenue');
             }
           } else {
             child =  const SplashScreen(title:"screen");

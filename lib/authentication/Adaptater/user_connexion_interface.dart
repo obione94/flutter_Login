@@ -1,4 +1,5 @@
 abstract class UserConnexionInterface {
-  String email ="";
-  String password ="";
+  get email => null;
+  get password => null;
+
 }

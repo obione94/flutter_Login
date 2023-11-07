@@ -6,8 +6,10 @@ class UserCredential implements UserCredentialInterface {
   final String email;
   final String provider;
   final bool success;
+  final String error;
+  final String password;
 
-  UserCredential({required this.token, required this.email, required this.provider, required this.success});
+  UserCredential({required this.token, required this.email, required this.password, required this.provider, required this.success, this.error = ""});
 
   Map<String, dynamic> toJson()
   {
@@ -16,6 +18,8 @@ class UserCredential implements UserCredentialInterface {
     user["email"] = email;
     user["provider"] = provider;
     user["success"] = success;
+    user["error"] = error;
+    user["password"] = password;
 
     return user;
   }
@@ -26,7 +30,9 @@ class UserCredential implements UserCredentialInterface {
         email: user["email"],
         token: user["token"],
         success: user["success"],
-        provider: user["provider"]
+        provider: user["provider"],
+        error: user["error"]??"",
+        password: user["password"]
     );
   }
 }

@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _loadingInProgress = true;
     _controller = AnimationController(
-        duration: const Duration(seconds: 6), vsync: this
+        duration: const Duration(seconds: 3), vsync: this
     );
     _angleAnimation = Tween(begin: 0.0, end: 360.0).animate(_controller)
       ..addListener(() {
